@@ -2,6 +2,8 @@ import { Schema } from '../../data/resource';
 import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
 
 const ddbClient = new DynamoDBClient({});
+const TableName = process.env.TABLE_NAME;
+
 
 export const handler: Schema["chatroomAssign"]["functionHandler"] = async (event) => {
   const challengeID = event.arguments.name;
@@ -12,7 +14,7 @@ export const handler: Schema["chatroomAssign"]["functionHandler"] = async (event
   }
 
   const command = new GetItemCommand({
-    TableName: "Challenge-oj4pgncqlbaxfc2zsq7enwvcoy-NONE", //HOW DO I NOT HARDCODE THIS?
+    TableName,
     Key: {
       "id": { S: challengeID }
     }
