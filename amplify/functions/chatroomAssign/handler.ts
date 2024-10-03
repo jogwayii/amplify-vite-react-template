@@ -1,22 +1,22 @@
-import { Schema } from '../../data/resource';
 import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
+import { env } from '$amplify/env/chat-room-assign'; // the import is '$amplify/env/<function-name>'
 
 const ddbClient = new DynamoDBClient({});
-const TableName = process.env.TABLE_NAME;
+const { TableName } = env;
 
 
-export const handler: Schema["chatroomAssign"]["functionHandler"] = async (event) => {
-  const challengeID = event.arguments.name;
-  console.log(`Processing challenge: ${challengeID}`);
+export const handler = async (event: any) => {
+  const { name } = event.arguments;
+  console.log(`Processing challenge: ${name}`);
 
-  if (typeof challengeID !== "string") {
+  if (typeof name !== "string") {
     throw new Error("Invalid challengeID");
   }
 
   const command = new GetItemCommand({
     TableName,
     Key: {
-      "id": { S: challengeID }
+      "id": { S: name }
     }
   });
 
@@ -29,8 +29,8 @@ export const handler: Schema["chatroomAssign"]["functionHandler"] = async (event
       console.log(`Challenge name: ${challengeName}`);
       return `Successfully retrieved challenge: ${challengeName}`;
     } else {
-      console.log(`No challenge found with ID: ${challengeID}`);
-      return `No challenge found with ID: ${challengeID}`;
+      console.log(`No challenge found with ID: ${name}`);
+      return `No challenge found with ID: ${name}`;
     }
   } catch (error) {
     console.error("Error executing DynamoDB command:", error);

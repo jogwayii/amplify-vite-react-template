@@ -1,11 +1,4 @@
 import { type ClientSchema, a, defineData } from "@aws-amplify/backend";
-
-/*== STEP 1 ===============================================================
-The section below creates a Todo database table with a "content" field. Try
-adding a new "isDone" field as a boolean. The authorization rule below
-specifies that any user authenticated via an API key can "create", "read",
-"update", and "delete" any "Todo" records.
-=========================================================================*/
 import { chatroomAssign } from '../functions/chatroomAssign/resource';
 
 const schema = a
@@ -40,7 +33,7 @@ const schema = a
         index("mobilePhone"),
         index("email")
       ])
-      .authorization(allow => [allow.custom()]),
+      .authorization(allow => [allow.publicApiKey()]),
 
     Challenge: a
     .model({
@@ -73,7 +66,7 @@ const schema = a
         .sortKeys(["availableDate"])
         .queryField("listChallengesByStatusAndAvailableDate")
     ])
-    .authorization(allow => [allow.custom()]),
+    .authorization(allow => [allow.publicApiKey()]),
     // all the above list permissions are to enable subscirbe... not sure which one actually does it.
     
     UserEntitlementChal: a
@@ -88,7 +81,7 @@ const schema = a
     .secondaryIndexes((index) => [
       index("userID").sortKeys(["name"]).queryField("listEntitlementsByUser")
     ])
-    .authorization(allow => [allow.custom()]),
+    .authorization(allow => [allow.publicApiKey()]),
 
     Chatroom: a
     .model({
@@ -104,7 +97,7 @@ const schema = a
       latestMessageDate: a.datetime()
     })
     .identifier(['challengeID', 'chatroomID'])
-    .authorization(allow => [allow.custom()]),
+    .authorization(allow => [allow.publicApiKey()]),
     
     UserChatroom: a
       .model({
@@ -119,7 +112,7 @@ const schema = a
         index("chatroomID").sortKeys(["userID"]).queryField("listUsersByChatroom"),
         index("challengeID").sortKeys(["userID"]).queryField("listUsersByChallenge")
       ])
-      .authorization(allow => [allow.custom()]),
+      .authorization(allow => [allow.publicApiKey()]),
 
     LatestMessage: a
       .model({
@@ -130,8 +123,7 @@ const schema = a
         imageURL: a.string(),
         bigImageURL: a.string(),
       }).identifier(['id'])
-      .authorization(allow => [allow.custom()]),
-    
+      .authorization(allow => [allow.publicApiKey()]),
       
     chatroomAssign: a
       .query()
@@ -140,8 +132,8 @@ const schema = a
       })
       .returns(a.string())
       .handler(a.handler.function(chatroomAssign))
-      .authorization(allow => [allow.custom()]),
-  });
+      .authorization(allow => [allow.publicApiKey()]),
+  }).authorization(allow => [allow.resource(chatroomAssign)]);;
 
 
 export type Schema = ClientSchema<typeof schema>;
