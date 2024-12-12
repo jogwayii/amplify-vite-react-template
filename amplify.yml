@@ -9,6 +9,7 @@ frontend:
   phases:
     build:
       commands:
+        - AMPLIFY_BACKEND_APP_ID=$REACT_APP_TESTING_1
         - npm run build
   artifacts:
     baseDirectory: dist
