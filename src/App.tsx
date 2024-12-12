@@ -3,7 +3,7 @@ import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 
 const client = generateClient<Schema>();
-
+console.log(process.env.AMPLIFY_BACKEND_APP_ID)
 function App() {
   const [challenges, setChallenges] = useState<Array<Schema["Challenge"]["type"]>>([]);
 
